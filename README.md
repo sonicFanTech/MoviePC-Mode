@@ -248,8 +248,6 @@ MoviePC Mode does not include movies, television episodes, streaming subscriptio
 
 MoviePC Mode is closed-source freeware. Redistribution, reverse engineering, decompilation, repackaging, bundling, resale, and modification are not permitted unless the copyright holder grants written permission.
 
-A full end-user license agreement should be added before a public release.
-
 ## Credits
 
 Created by **sonic Fan Tech**.
