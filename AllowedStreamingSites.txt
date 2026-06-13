@@ -1,0 +1,44 @@
+# MoviePC Mode legitimate streaming and media-site allow list
+#
+# One Chromium URL pattern per line. Blank lines and lines starting with # are ignored.
+# Edit this file as an administrator, then rerun the installer or the manual
+# Brave-policy script to apply changes to the MoviePC account.
+#
+# Add only services that you are authorized to use. MoviePC Mode does not bypass
+# subscriptions, DRM, regional restrictions, or any service's terms of use.
+
+[*.]imdb.com
+[*.]youtube.com
+[*.]youtu.be
+[*.]googlevideo.com
+[*.]ytimg.com
+[*.]google.com
+[*.]gstatic.com
+[*.]netflix.com
+[*.]nflxext.com
+[*.]nflximg.net
+[*.]nflxvideo.net
+[*.]hulu.com
+[*.]disneyplus.com
+[*.]disney.com
+[*.]max.com
+[*.]hbomax.com
+[*.]primevideo.com
+[*.]amazon.com
+[*.]amazonvideo.com
+[*.]paramountplus.com
+[*.]cbs.com
+[*.]peacocktv.com
+[*.]nbc.com
+[*.]tubitv.com
+[*.]pluto.tv
+[*.]plex.tv
+[*.]crunchyroll.com
+[*.]kanopy.com
+[*.]hoopladigital.com
+[*.]fandangoathome.com
+[*.]vudu.com
+[*.]tv.apple.com
+[*.]apple.com
+[*.]roku.com
+[*.]therokuchannel.roku.com
