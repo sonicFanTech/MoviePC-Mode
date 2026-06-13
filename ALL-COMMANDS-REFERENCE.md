@@ -1,6 +1,14 @@
-# MoviePC Mode Manual Command Reference
+.# MoviePC Mode manual commands reference
 
-This file lists the main administrative commands used by the manual deployment toolkit. Run them only from a separate administrator account.
+This file documents the core administrative commands used by MoviePC Mode. The `.cmd` and `.ps1` scripts automate these steps with checks and safer ordering.
+
+## Create a passwordless standard MoviePC account
+
+```bat
+net user "MoviePC" "" /add /comment:"Restricted standard account used by MoviePC Mode" /passwordchg:no
+net localgroup Users "MoviePC" /add
+net localgroup Administrators "MoviePC" /delete
+```
 
 ## Enable Shell Launcher
 
@@ -8,62 +16,62 @@ This file lists the main administrative commands used by the manual deployment t
 dism.exe /Online /Enable-Feature /All /FeatureName:Client-EmbeddedShellLauncher /NoRestart
 ```
 
-After any required restart, configure the per-user shell from an elevated PowerShell window:
+Restart when DISM returns `3010` or otherwise says a restart is required.
+
+## Configure Shell Launcher from elevated PowerShell
 
 ```powershell
-$sid = ([System.Security.Principal.NTAccount]'MoviePC').Translate([System.Security.Principal.SecurityIdentifier]).Value
+$sid = (Get-CimInstance Win32_UserAccount -Filter "LocalAccount=True AND Name='MoviePC'").SID
 $class = [wmiclass]'\\localhost\root\standardcimv2\embedded:WESL_UserSetting'
-$exe = "$env:ProgramFiles\MoviePC Mode\MoviePCShell.exe"
+$exe = 'C:\Program Files\MoviePC Mode\MoviePCShell.exe'
 $cmd = '"' + $exe + '" --shell-mode'
 $null = $class.SetDefaultShell('explorer.exe', 0)
 $null = $class.SetCustomShell($sid, $cmd, $null, $null, 0)
 $null = $class.SetEnabled($true)
 ```
 
-## Restore Explorer immediately
+## Remove the MoviePC custom shell
 
 ```powershell
-$sid = ([System.Security.Principal.NTAccount]'MoviePC').Translate([System.Security.Principal.SecurityIdentifier]).Value
+$sid = (Get-CimInstance Win32_UserAccount -Filter "LocalAccount=True AND Name='MoviePC'").SID
 $class = [wmiclass]'\\localhost\root\standardcimv2\embedded:WESL_UserSetting'
-$null = $class.RemoveCustomShell($sid)
-$null = $class.SetDefaultShell('explorer.exe', 0)
-$null = $class.SetEnabled($false)
+try { $null = $class.RemoveCustomShell($sid) } catch {}
+try { $null = $class.SetDefaultShell('explorer.exe', 0) } catch {}
+try { $null = $class.SetEnabled($false) } catch {}
 ```
 
-## Create the standard account
+## Download official Brave installer
 
-```bat
-net user "MoviePC" "" /add /passwordchg:no /expires:never
-net localgroup "Users" "MoviePC" /add
-net localgroup "Administrators" "MoviePC" /delete
+```powershell
+Invoke-WebRequest 'https://laptop-updates.brave.com/latest/winx64' -OutFile '.\BraveBrowserSetup.exe'
+Start-Process '.\BraveBrowserSetup.exe' -ArgumentList '--silent --install' -Wait
 ```
 
-## Brave navigation restriction
+## Download official VLC ZIP archive
 
-The full implementation is in `Scripts\05-Apply-Brave-Media-Allowlist.ps1`. It writes policy values under the MoviePC account's loaded registry hive:
+```powershell
+Invoke-WebRequest 'https://get.videolan.org/vlc/3.0.23/win64/vlc-3.0.23-win64.zip' -OutFile '.\vlc-3.0.23-win64.zip'
+Expand-Archive '.\vlc-3.0.23-win64.zip' -DestinationPath '.\VLC-Extract' -Force
+```
+
+## Brave site restriction model
+
+The `MoviePC` account receives:
 
 ```text
-Software\Policies\BraveSoftware\Brave
-Software\Policies\BraveSoftware\Brave\URLBlocklist
+Software\Policies\BraveSoftware\Brave\URLBlocklist\1 = *
+```
+
+Approved streaming patterns are added under:
+
+```text
 Software\Policies\BraveSoftware\Brave\URLAllowlist
 ```
 
-The block list contains `*`. The allow list is populated from:
+Use `10-Add-Brave-Allowed-Domain.cmd` rather than editing the registry by hand.
 
-```text
-C:\Program Files\MoviePC Mode\AllowedStreamingSites.txt
-```
+## AppLocker safe rollout
 
-Add only services that the administrator is authorized to use.
+Use AuditOnly mode first. Do not enforce rules before testing Brave, VLC, Settings, File Explorer, DVD playback, USB playback, and common Windows helper processes.
 
-## AppLocker
-
-Apply AuditOnly mode first. The complete example is in `Scripts\07-Enable-AppLocker-AuditOnly.ps1`.
-
-## Logs
-
-The one-click native installer writes command transcripts under:
-
-```text
-C:\ProgramData\MoviePC Mode\Logs
-```
+The provided scripts automate policy XML creation, backup, audit reporting, enforcement, and restore.
