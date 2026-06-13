@@ -4,7 +4,7 @@
 
 The project is intended for devices that should remain simple and difficult for guests to misconfigure: a living-room PC, a spare laptop connected to a television, a guest-room computer, or a portable movie machine.
 
-> **Source availability:** MoviePC Mode is freeware, but it is **not open source** and is **not source available**. Public GitHub releases should contain compiled installers, documentation, screenshots, and release notes only. The private source tree should not be uploaded to a public repository.
+> **Source availability:** MoviePC Mode is freeware, but it is **not open source** and is **not source available**.
 
 ## Screenshots
 
