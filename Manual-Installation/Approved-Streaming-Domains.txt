@@ -1,0 +1,29 @@
+MoviePC Mode default Brave URL allowlist
+=======================================
+
+about:blank
+brave://*
+chrome://*
+*://*.netflix.com/*
+*://*.hulu.com/*
+*://*.disneyplus.com/*
+*://*.max.com/*
+*://*.hbomax.com/*
+*://*.primevideo.com/*
+*://*.amazon.com/gp/video/*
+*://*.paramountplus.com/*
+*://*.peacocktv.com/*
+*://*.tubitv.com/*
+*://*.pluto.tv/*
+*://*.roku.com/*
+*://*.plex.tv/*
+*://*.crunchyroll.com/*
+*://*.youtube.com/*
+*://youtu.be/*
+*://*.imdb.com/*
+
+Notes
+-----
+Streaming services frequently rely on additional authentication, DRM, CDN, or asset domains.
+Test each legitimate service from the MoviePC account. Add only required domains with:
+  10-Add-Brave-Allowed-Domain.cmd
